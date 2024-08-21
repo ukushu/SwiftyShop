@@ -16,7 +16,7 @@ public extension ProductID {
 }
 
 public extension ProductID {
-    func requestProduct() -> R<Product> {
+    private func requestProduct() -> R<Product> {
         return Result {
             try getSyncResultFrom {
                 try await Product.products(for: [self.id] )
@@ -27,7 +27,7 @@ public extension ProductID {
         }
     }
     
-    func purchase() -> R<Product.PurchaseResult> {
+    private func purchase() -> R<Product.PurchaseResult> {
         requestProduct()
             .flatMap { product in
                 Result {
@@ -35,6 +35,37 @@ public extension ProductID {
                         try await product.purchase()
                     }
                 }
+            }
+    }
+    
+    func buy() -> R<()> {
+        self.purchase()
+            .flatMap{ result in
+                switch result {
+                    case let .success(.verified(transaction)):
+                        // Successful purhcase
+                        return Result {
+                            getSyncResultFrom {
+                                await transaction.finish()
+                            }
+                        }
+                    
+                    case let .success(.unverified(_, error)):
+                        // Successful purchase but transaction/receipt can't be verified
+                        // Could be a jailbroken phone
+                        break
+                    case .pending:
+                        // Transaction waiting on SCA (Strong Customer Authentication) or
+                        // approval from Ask to Buy
+                        break
+                    case .userCancelled:
+                        // ^^^
+                        break
+                    @unknown default:
+                        break
+                    }
+                
+                return .failure(WTF("WTF"))
             }
     }
 }
