@@ -15,6 +15,30 @@ public extension ProductID {
     var skproduct : SKProduct? { return nil }
 }
 
+public extension ProductID {
+    func requestProduct() -> R<Product> {
+        return Result {
+            try getSyncResultFrom {
+                try await Product.products(for: [self.id] )
+            }
+        }
+        .flatMap {
+            $0.first.asNonOptional
+        }
+    }
+    
+    func purchase() -> R<Product.PurchaseResult> {
+        requestProduct()
+            .flatMap { product in
+                Result {
+                    try getSyncResultFrom {
+                        try await product.purchase()
+                    }
+                }
+            }
+    }
+}
+
 public extension Array where Element == ProductID {
     func requestProducts() -> R<[Product]> {
         return Result {
