@@ -19,6 +19,14 @@ public class SwiftyShop {
             }
         }
     }
+    
+    public static var proIsUnlocked: Bool {
+        if let trans = currentEntitlements().maybeSuccess {
+            return trans.count > 0
+        }
+        
+        return false
+    }
 }
 
 fileprivate extension SwiftyShop {
