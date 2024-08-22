@@ -22,13 +22,16 @@ public class SwiftyShop {
     
     public static var proIsUnlocked: Bool {
         if let trans = currentEntitlements().maybeSuccess {
-            return trans.count > 0
+            return trans.notRevoked.count > 0
         }
         
         return false
     }
 }
 
+///////////////////////
+///HELPERS
+///////////////////////
 fileprivate extension SwiftyShop {
     static func transactions() async -> [Transaction] {
         var results = [Transaction]()
@@ -42,5 +45,11 @@ fileprivate extension SwiftyShop {
         }
         
         return results
+    }
+}
+
+fileprivate extension [Transaction] {
+    var notRevoked: [Transaction] {
+        self.filter{ $0.revocationDate == nil }
     }
 }
