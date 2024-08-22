@@ -11,35 +11,41 @@ public struct ProductID: Hashable, Identifiable {
     }
 }
 
+public extension Product.PurchaseResult {
+    func finish() async throws -> Product.PurchaseResult {
+        switch self {
+        case let .success(.verified(transaction)):
+            await transaction.finish()
+            
+        case let .success(.unverified(_, error)):
+            throw WTF(possiblyJailbroken + error.localizedDescription)
+    
+        case .pending:
+            // Transaction waiting on SCA (Strong Customer Authentication) or
+            // approval from Ask to Buy
+            break
+            
+        case .userCancelled:
+            throw WTF("userCancelled")
+            
+        @unknown default:
+            break
+        }
+        
+        return self
+//        return .failure(WTF("WTF"))
+    }
+}
+
 public extension ProductID {
-    func buy() -> R<()> {
+    func buy() -> R<Product.PurchaseResult> {
         self.purchase()
             .flatMap{ result in
-                switch result {
-                    case let .success(.verified(transaction)):
-                        // Successful purhcase
-                        return Result {
-                            getSyncResultFrom {
-                                await transaction.finish()
-                            }
-                        }
-                    
-                    case let .success(.unverified(_, error)):
-                        return .failure(WTF(possiblyJailbroken + error.localizedDescription))
-                    
-                    case .pending:
-                        // Transaction waiting on SCA (Strong Customer Authentication) or
-                        // approval from Ask to Buy
-                        break
-                    
-                    case .userCancelled:
-                        return .failure(WTF("userCancelled"))
-                    
-                    @unknown default:
-                        break
+                return Result {
+                    try getSyncResultFrom {
+                        try await result.finish()
                     }
-                
-                return .failure(WTF("WTF"))
+                }
             }
     }
 }
