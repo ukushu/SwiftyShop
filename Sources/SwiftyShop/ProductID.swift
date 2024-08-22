@@ -12,10 +12,55 @@ public struct ProductID: Hashable, Identifiable {
 }
 
 public extension ProductID {
-    var skproduct : SKProduct? { return nil }
+    func buy() -> R<()> {
+        self.purchase()
+            .flatMap{ result in
+                switch result {
+                    case let .success(.verified(transaction)):
+                        // Successful purhcase
+                        return Result {
+                            getSyncResultFrom {
+                                await transaction.finish()
+                            }
+                        }
+                    
+                    case let .success(.unverified(_, error)):
+                        // Successful purchase but transaction/receipt can't be verified
+                        // Could be a jailbroken phone
+                        break
+                    
+                    case .pending:
+                        // Transaction waiting on SCA (Strong Customer Authentication) or
+                        // approval from Ask to Buy
+                        break
+                    
+                    case .userCancelled:
+                        return .failure(WTF("userCancelled"))
+                    
+                    @unknown default:
+                        break
+                    }
+                
+                return .failure(WTF("WTF"))
+            }
+    }
 }
 
-public extension ProductID {
+public extension Array where Element == ProductID {
+    func requestProducts() -> R<[Product]> {
+        return Result {
+            try getSyncResultFrom {
+                try await Product.products(for: self.map{ $0.id } )
+            }
+        }
+    }
+}
+
+////////////////////////
+///HELPERS
+///////////////////////
+
+private extension ProductID {
     private func requestProduct() -> R<Product> {
         return Result {
             try getSyncResultFrom {
@@ -37,46 +82,4 @@ public extension ProductID {
                 }
             }
     }
-    
-    func buy() -> R<()> {
-        self.purchase()
-            .flatMap{ result in
-                switch result {
-                    case let .success(.verified(transaction)):
-                        // Successful purhcase
-                        return Result {
-                            getSyncResultFrom {
-                                await transaction.finish()
-                            }
-                        }
-                    
-                    case let .success(.unverified(_, error)):
-                        // Successful purchase but transaction/receipt can't be verified
-                        // Could be a jailbroken phone
-                        break
-                    case .pending:
-                        // Transaction waiting on SCA (Strong Customer Authentication) or
-                        // approval from Ask to Buy
-                        break
-                    case .userCancelled:
-                        // ^^^
-                        break
-                    @unknown default:
-                        break
-                    }
-                
-                return .failure(WTF("WTF"))
-            }
-    }
-}
-
-public extension Array where Element == ProductID {
-    func requestProducts() -> R<[Product]> {
-        return Result {
-            try getSyncResultFrom {
-                try await Product.products(for: self.map{ $0.id } )
-            }
-        }
-    }
-
 }

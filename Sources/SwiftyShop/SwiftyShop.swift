@@ -19,8 +19,10 @@ public class SwiftyShop {
             }
         }
     }
-    
-    static fileprivate func transactions() async -> [Transaction] {
+}
+
+fileprivate extension SwiftyShop {
+    static func transactions() async -> [Transaction] {
         var results = [Transaction]()
         
         for await result in Transaction.currentEntitlements {
