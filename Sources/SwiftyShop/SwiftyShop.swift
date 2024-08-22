@@ -12,14 +12,6 @@ public class SwiftyShop {
         }
     }
     
-    public static func currentEntitlements() -> R<[Transaction]> {
-        return Result {
-            getSyncResultFrom {
-                return await transactions()
-            }
-        }
-    }
-    
     public static var proIsUnlocked: Bool {
         if let trans = currentEntitlements().maybeSuccess {
             return trans.notRevoked.count > 0
@@ -33,6 +25,14 @@ public class SwiftyShop {
 ///HELPERS
 ///////////////////////
 fileprivate extension SwiftyShop {
+    static func currentEntitlements() -> R<[Transaction]> {
+        return Result {
+            getSyncResultFrom {
+                return await transactions()
+            }
+        }
+    }
+    
     static func transactions() async -> [Transaction] {
         var results = [Transaction]()
         

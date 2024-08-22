@@ -25,9 +25,7 @@ public extension ProductID {
                         }
                     
                     case let .success(.unverified(_, error)):
-                        // Successful purchase but transaction/receipt can't be verified
-                        // Could be a jailbroken phone
-                        break
+                        return .failure(WTF(possiblyJailbroken + error.localizedDescription))
                     
                     case .pending:
                         // Transaction waiting on SCA (Strong Customer Authentication) or
@@ -83,3 +81,7 @@ private extension ProductID {
             }
     }
 }
+
+private var possiblyJailbroken = """
+Successful purchase but transaction/receipt can't be verified; Could be a jailbroken; Details:
+"""
