@@ -24,7 +24,7 @@ public class SwiftyShop {
 ///////////////////////
 ///HELPERS
 ///////////////////////
-fileprivate extension SwiftyShop {
+public extension SwiftyShop {
     static func currentEntitlements() -> R<[Transaction]> {
         return Result {
             getSyncResultFrom {
