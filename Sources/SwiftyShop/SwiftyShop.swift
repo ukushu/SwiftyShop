@@ -12,13 +12,13 @@ public class SwiftyShop {
         }
     }
     
-//    public static func currentEntitlements() -> R[Transaction] {
-//        return Result {
-//            try getSyncResultFrom {
-//                return await transactions()
-//            }
-//        }
-//    }
+    public static func currentEntitlements() -> R<[Transaction]> {
+        return Result {
+            getSyncResultFrom {
+                return await transactions()
+            }
+        }
+    }
     
     static fileprivate func transactions() async -> [Transaction] {
         var results = [Transaction]()
