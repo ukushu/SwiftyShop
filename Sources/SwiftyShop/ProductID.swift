@@ -45,6 +45,10 @@ public extension ProductID {
 }
 
 public extension Array where Element == ProductID {
+    func asProducts() async throws -> [Product]  {
+        try await Product.products(for: self.map{ $0.id } )
+    }
+    
     func requestProducts() -> R<[Product]> {
         return Result {
             try getSyncResultFrom {
