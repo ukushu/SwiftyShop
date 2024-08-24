@@ -27,7 +27,7 @@ public class SwiftyShop {
 public extension SwiftyShop {
     static func currentEntitlements() -> R<[Transaction]> {
         return Result {
-            getSyncResultFrom {
+            try getSyncResultFrom {
                 return await transactions()
             }
         }
