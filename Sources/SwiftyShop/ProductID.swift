@@ -19,7 +19,7 @@ public extension Product.PurchaseResult {
             
         case let .success(.unverified(_, error)):
             throw WTF(possiblyJailbroken + error.localizedDescription)
-    
+            
         case .pending:
             // Transaction waiting on SCA (Strong Customer Authentication) or
             // approval from Ask to Buy
