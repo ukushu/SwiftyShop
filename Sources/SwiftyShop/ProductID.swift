@@ -37,18 +37,6 @@ public extension Product.PurchaseResult {
     }
 }
 
-public extension ProductID {
-    func buy() -> R<Product.PurchaseResult> {
-        self.purchase()
-            .flatMap{ result in
-                return Result {
-                    try getSyncResultFrom {
-                        try await result.finish()
-                    }
-                }
-            }
-    }
-}
 
 public extension Array where Element == ProductID {
     func asProducts() async throws -> [Product]  {
