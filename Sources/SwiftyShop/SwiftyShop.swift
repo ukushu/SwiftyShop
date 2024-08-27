@@ -3,7 +3,7 @@ import Essentials
 import StoreKit
 
 public class SwiftyShop {
-    public static func restorePurchases () -> R<[Transaction]> {
+    public static func restorePurchases() -> R<[Transaction]> {
         return Result {
             try getSyncResultFrom {
                 try await AppStore.sync()

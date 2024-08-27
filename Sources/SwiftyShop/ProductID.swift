@@ -33,7 +33,6 @@ public extension Product.PurchaseResult {
         }
         
         return self
-//        return .failure(WTF("WTF"))
     }
 }
 
