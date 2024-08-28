@@ -2,7 +2,7 @@ import Foundation
 import Essentials
 import StoreKit
 
-public class SwiftyShop {
+public class SwiftyShopCore {
     public static func restorePurchases() -> R<[Transaction]> {
         return Result {
             try getSyncResultFrom {
@@ -24,7 +24,7 @@ public class SwiftyShop {
 ///////////////////////
 ///HELPERS
 ///////////////////////
-public extension SwiftyShop {
+public extension SwiftyShopCore {
     static func currentEntitlements() -> R<[Transaction]> {
         return Result {
             try getSyncResultFrom {
