@@ -11,6 +11,10 @@ public struct ProductID: Hashable, Identifiable {
     }
 }
 
+public extension ProductID {
+    static var available : [ProductID] { SwiftyShopConfig.shared.products.map { ProductID(id: $0) } }
+}
+
 public extension Product.PurchaseResult {
     func finish() async throws -> Product.PurchaseResult {
         switch self {
