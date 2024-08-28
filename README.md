@@ -15,7 +15,7 @@ Simple Shop library for iOS/macOS apps. Based on StoreKit2
 ## How to use
 
 1. Create enum with products:
-```
+```swift
 import Foundation
 import SwiftyShop
 
@@ -72,7 +72,7 @@ extension BuyType {
 
 2. Add app delegate to your app:
 
-```
+```swift
 import SwiftUI
 
 @main
@@ -89,7 +89,7 @@ struct SwiftyShopHostApp: App {
 ```
 
 AppDelegate.swift:
-``` 
+```swift
 import Foundation
 import AppKit
 import SwiftyShop
@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 3. Create your custom shop views
 
 ShopView.swift
-```
+```swift
 import Foundation
 import SwiftUI
 import SwiftyShop
@@ -150,8 +150,7 @@ public struct MainView: View {
 
 (here is a lot of styling): 
 
-```
-
+```swift
 import Foundation
 import SwiftUI
 import SwiftyShop
@@ -287,5 +286,4 @@ fileprivate struct BuyButtonStyle: ButtonStyle {
             .opacity(configuration.isPressed ? 0.9 : 1)
     }
 }
-
 ```
