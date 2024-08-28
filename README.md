@@ -11,7 +11,7 @@ Simple Shop library for iOS/macOS apps. Based on StoreKit2
 * watchOS 8.0
 * visionOS 1.0
 
-<img src="https://github.com/ukushu/SwiftyShop/blob/main/sample.png?raw=true">
+<img src="https://github.com/ukushu/SwiftyShop/blob/main/sample.gif?raw=true">
 
 ## How to use
 
