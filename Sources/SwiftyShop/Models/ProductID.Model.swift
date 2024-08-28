@@ -63,7 +63,7 @@ extension ProductID.State {
 extension ProductID {
     class Model {
         let productID: ProductID
-        let pool = FPool(queue: .global(qos: .userInteractive))
+        let pool = FSPool(queue: DispatchQueue.global(qos: .userInteractive))
         
         let state               = S<ProductID.State>(queue: .main)
         let inProgress          = S<Bool>(queue: .main)
@@ -107,18 +107,18 @@ extension ProductID {
             // purchaseResult will complete by buy() call
             pool.combine(product, purchaseResult)
                 .map { ProductID.State.fetched($0, $1) }
-                .updating(signal: self.state, queue: .main)
+                .updating(signal: self.state, queue: DispatchQueue.main)
                 .onSuccess { _ in
                     printDbg("purchase did finish")
                 }
             
             pool.combine(product, transaction)
                 .map { ProductID.State.restored($0, $1) }
-                .updating(signal: self.state, queue: .main)
+                .updating(signal: self.state, queue: DispatchQueue.main)
                 .onSuccess { _ in printDbg("purchase did restore") }
             
             MyShop.shared.transactions
-                .onUpdate(context: self, queue: .main) { me, all in
+                .onUpdate(context: self, queue: DispatchQueue.main) { me, all in
                     printDbg("transactions did restore")
                     
                     if let ours = all.filter({ $0.productID == me.productID.id }).first {
@@ -147,7 +147,7 @@ extension ProductID {
                     .flatMap { try await $0.finish() }
 //                    .completing(future: purchaseResult, queue: .main)
                     .updatingError(signal: errors)
-                    .onComplete(context: self, queue: .main) { me, purchaseResult in
+                    .onComplete(context: self, queue: DispatchQueue.main) { me, purchaseResult in
                         me.inProgress.update(false)
                         
                         printDbg("in progress false \(me.productID)")

@@ -13,7 +13,7 @@ public extension ProductID {
 public extension ProductID {
     class ViewModel: ObservableObject {
         let model : ProductID.Model
-        let pool = FPool(queue: .global(qos: .userInteractive))
+        let pool = FSPool(queue: .global(qos: .userInteractive))
         
         let productID: ProductID
         
