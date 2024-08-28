@@ -100,7 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 3. Create your custom shop views
 
-ShopView.swift
+MainView.swift
 ```swift
 import Foundation
 import SwiftUI
@@ -109,13 +109,12 @@ import SwiftyShop
 class PricesViewModel : ObservableObject {
     @Published var type : BuyType = .yearly
     
-    public static var shared = PricesViewModel()
+    static var shared = PricesViewModel()
     
     private init() { }
 }
 
-
-public struct MainView: View {
+struct MainView: View {
     @ObservedObject var model = PricesViewModel.shared
     
     public var body: some View {
@@ -136,6 +135,7 @@ public struct MainView: View {
         }
     }
 }
+
 ```
 
 4. Create your product price view:
