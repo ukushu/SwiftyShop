@@ -55,17 +55,6 @@ extension BuyType {
             "Month"
         }
     }
-    
-    var overlayText: String {
-        switch self {
-        case .forever:
-            "Best Value"
-        case .yearly:
-            "7-Day Trial"
-        case .monthly:
-            "Monthly Plan"
-        }
-    }
 }
 
 ```
@@ -87,6 +76,8 @@ struct SwiftyShopHostApp: App {
 }
 
 ```
+
+Create AppDelegate for configure your store settings:
 
 AppDelegate.swift:
 ```swift
@@ -148,60 +139,24 @@ public struct MainView: View {
 
 4. Create your product price view:
 
-(here is a lot of styling): 
-
 ```swift
 import Foundation
 import SwiftUI
 import SwiftyShop
+import Essentials
 
 struct PriceBtn: View {
     let type: BuyType
     @ObservedObject var model = PricesViewModel.shared
-    
     private var isSelected: Bool { model.type == type}
-    
-    @State private var isHovering: Bool = false
     
     var body: some View {
         Button(action: { withAnimation { model.type = type } }) {
             PriceContent(type: type, isSelected: isSelected)
-                .frame(width: (390 - 48) / 3, height: 145)
-                .background {
-                    if isSelected {
-                        Color(hex: 0x9281F7).opacity(0.1)
-                    } else if isHovering {
-                        Color(hex: 0x768BA6).opacity(0.22)
-                    } else {
-                        Color(hex: 0x768BA6).opacity(0.2)
-                    }
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(isSelected ? Color(hex: 0x9281F7) : Color.clear, lineWidth: 4)
-                )
-                .overlay(
-                    VStack {
-                        Spacer()
-                        Rectangle()
-                            .fill(isSelected ? Color(hex: 0x9281F7) : Color(hex: 0x768BA6).opacity(0.5))
-                            .frame(height: 25)
-                            .overlay(
-                                Text(type.overlayText)
-                                    .foregroundColor(.white)
-                                    .font(.system(size: 13))
-                                    .bold()
-                            )
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .onHover { hover in
-                    isHovering = hover
-                }
+                .frame(width: 115, height: 145)
+                .background(Color.gray.opacity(0.1))
         }
-        .buttonStyle(BuyButtonStyle())
-        .padding(.top, 5)
+        .buttonStyle(.plain)
     }
 }
 
@@ -226,6 +181,9 @@ fileprivate struct PriceContent: View {
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 2)
+                
                 if model.inProgress {
                     ProgressView()
                 }
@@ -245,8 +203,6 @@ fileprivate struct PriceContent: View {
         VStack {
             Text(type.monthsCount)
                 .font(type == .forever ? .system(size: 40) : .system(size: 30))
-                .bold()
-                .padding(.top, type == .forever ? -41 : -30)
             
             if type == .forever {
                 VStack {
@@ -255,9 +211,6 @@ fileprivate struct PriceContent: View {
                     
                     Text(model.price)
                         .font(.system(size: 18))
-                        .fontWeight(.semibold )
-                        .foregroundColor(Color(hex: 0xF8F8F3))
-                        .padding(.top, 1)
                 }
                 .offset(y:-2)
             } else {
@@ -266,24 +219,8 @@ fileprivate struct PriceContent: View {
                 
                 Text(model.price)
                     .font(.system(size: 18))
-                    .fontWeight(.semibold )
-                    .foregroundColor(Color(hex: 0xF8F8F3))
-                    .padding(.top, 2)
             }
         }
-        
-    }
-}
-
-////////////////////
-///STYLES
-////////////////////
-
-fileprivate struct BuyButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(Color.clear)
-            .opacity(configuration.isPressed ? 0.9 : 1)
     }
 }
 ```
