@@ -1,5 +1,11 @@
 # SwiftyShop
 
+```
+https://github.com/ukushu/SwiftyShop.git
+
+git@github.com:ukushu/SwiftyShop.git
+```
+
 <img src="https://github.com/ukushu/SwiftyShop/blob/main/Logo_1024.png?raw=true" width="250">
 
 Simple Shop library for iOS/macOS apps. Based on StoreKit2
