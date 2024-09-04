@@ -39,7 +39,7 @@ public class MyShop {
             .atLeastOneSatisfy{ $0 == true }
     }
     
-    static var subscriptionExpired: Bool {
+    public var subscriptionExpired: Bool {
         SwiftyShopConfig.shared
             .products
             .compactMap{ ProductID(id: $0).viewModel.expirationDate }
