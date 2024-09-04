@@ -40,9 +40,13 @@ public class MyShop {
     }
     
     public var subscriptionExpired: Bool {
-        SwiftyShopConfig.shared
+        let expDates = SwiftyShopConfig.shared
             .products
             .compactMap{ ProductID(id: $0).viewModel.expirationDate }
+        
+        guard expDates.count > 0 else { return false }
+        
+        return expDates
             .allSatisfy{ $0 < Date.now }
     }
 }
