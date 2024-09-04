@@ -70,9 +70,9 @@ extension ProductID {
         let errors              = S<Error>(queue: .main)
         let transactionUpdates  = S<VerificationResult<StoreKit.Transaction>>(queue: .main)
         
-        let product        = F<Product>.promise(queue: .main)
-        let purchaseResult = F<Product.PurchaseResult>.promise(queue: .main)
-        let transaction    = F<StoreKit.Transaction>.promise(queue: .main)
+        let product             = F<Product>.promise(queue: .main)
+        let purchaseResult      = F<Product.PurchaseResult>.promise(queue: .main)
+        let transaction         = F<StoreKit.Transaction>.promise(queue: .main)
         
         init(productID: ProductID) {
             self.productID = productID

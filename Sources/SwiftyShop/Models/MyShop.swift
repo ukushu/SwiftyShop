@@ -31,6 +31,20 @@ public class MyShop {
             me.transactions.update(list)
         }
     }
+    
+    public var isPro: Bool {
+        SwiftyShopConfig.shared
+            .products
+            .map { ProductID(id: $0).viewModel.isPurchased }
+            .atLeastOneSatisfy{ $0 == true }
+    }
+    
+    static var subscriptionExpired: Bool {
+        SwiftyShopConfig.shared
+            .products
+            .compactMap{ ProductID(id: $0).viewModel.expirationDate }
+            .allSatisfy{ $0 < Date.now }
+    }
 }
 
 public extension ProductID {

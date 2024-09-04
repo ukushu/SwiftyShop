@@ -20,6 +20,7 @@ public extension ProductID {
         @Published public var state                : ProductID.State
         @Published public var inProgress = false
         @Published public var isPurchased = false
+        public var expirationDate: Date? = nil
         
         @Published public var transactionUpdates   : [VerificationResult<StoreKit.Transaction>] = []
         
@@ -29,6 +30,11 @@ public extension ProductID {
             self.state = .pending(productID)
             self.model = ProductID.Model(productID: productID)
             self.productID = productID
+            
+            /* read info from disk */
+            if let info : ProductID.Info = productID.restoreFromDisk().maybeSuccess {
+                self.expirationDate = info.expiresAt
+            }
             
             model.state
                 .assign(on: self, to: \.state)
@@ -47,8 +53,9 @@ public extension ProductID {
                 }
             
             model.transaction
-                .onSuccess(context: self) { me, _ in
+                .onSuccess(context: self) { me, trans in
                     me.isPurchased = true
+                    me.expirationDate = trans.expirationDate
                 }
             
             model.errors
