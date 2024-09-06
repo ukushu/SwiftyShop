@@ -21,8 +21,9 @@ public extension ProductID {
         @Published public var inProgress = false
         @Published public var isPurchased = false
         public var expirationDate: Date? = nil
+        public var firstPurchaseDate: Date? = nil
         
-        @Published public var transactionUpdates   : [VerificationResult<StoreKit.Transaction>] = []
+        @Published public var transactionUpdates : [VerificationResult<StoreKit.Transaction>] = []
         
         public var price  : String { state.price }
         
@@ -56,6 +57,7 @@ public extension ProductID {
                 .onSuccess(context: self) { me, trans in
                     me.isPurchased = true
                     me.expirationDate = trans.expirationDate
+                    me.firstPurchaseDate = trans.originalPurchaseDate
                 }
             
             model.errors

@@ -49,6 +49,14 @@ public class MyShop {
         return expDates
             .allSatisfy{ $0 < Date.now }
     }
+    
+    public var trialIsGoing: Bool {
+        let expDates = SwiftyShopConfig.shared
+            .products
+            .compactMap{ ProductID(id: $0).viewModel }
+        
+        return true
+    }
 }
 
 public extension ProductID {
@@ -56,6 +64,7 @@ public extension ProductID {
         if let vm = MyShop.shared.viewModels[self] {
             return vm
         }
+        
         let vm = ViewModel(productID: self)
         MyShop.shared.viewModels[self] = vm
         return vm

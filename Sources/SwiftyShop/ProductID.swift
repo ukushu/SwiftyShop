@@ -40,9 +40,26 @@ public extension Product.PurchaseResult {
     }
 }
 
+public extension ProductID {
+    func asProduct() async throws -> Product {
+        let products = try await Product.products(for: [self.id] )
+        
+        guard let prod = products.first else { throw WTF("no such product") }
+        
+        return prod
+    }
+    
+    func requestProducts() -> R<Product> {
+        return Result {
+            try getSyncResultFrom {
+                try await asProduct()
+            }
+        }
+    }
+}
 
 public extension Array where Element == ProductID {
-    func asProducts() async throws -> [Product]  {
+    func asProducts() async throws -> [Product] {
         try await Product.products(for: self.map{ $0.id } )
     }
     
