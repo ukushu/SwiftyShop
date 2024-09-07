@@ -32,6 +32,11 @@ extension SwiftyShopCore {
                 return await transactions()
             }
         }
+        .onFailure {
+            print($0.detailedDescription )
+            print("---------------------" )
+            print($0.localizedDescription )
+        }
     }
     
     static func transactions() async -> [Transaction] {

@@ -30,6 +30,11 @@ public class MyShop {
         .onSuccess(context: self) { me, list in
             me.transactions.update(list)
         }
+        .onFailure {
+            print($0.detailedDescription )
+            print("---------------------" )
+            print($0.localizedDescription )
+        }
     }
     
     public var isPro: Bool {
