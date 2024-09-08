@@ -3,7 +3,7 @@ import Foundation
 import Essentials
 import StoreKit
 
-class SwiftyShopCore {
+public class SwiftyShopCore {
     public static func restorePurchases() -> R<[Transaction]> {
         return Result {
             try getSyncResultFrom {

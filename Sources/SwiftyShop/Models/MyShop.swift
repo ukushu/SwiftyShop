@@ -34,6 +34,8 @@ public class MyShop {
             print($0.detailedDescription )
             print("---------------------" )
             print($0.localizedDescription )
+            
+            alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
         }
     }
     
