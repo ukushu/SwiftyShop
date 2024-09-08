@@ -35,7 +35,7 @@ public class MyShop {
             print("---------------------" )
             print($0.localizedDescription )
             
-            alert(msg: "Failed to restore purchases", text: $0.localizedDescription)
+            alert(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
         }
         .onSuccess {
             if $0.count == 0 {
