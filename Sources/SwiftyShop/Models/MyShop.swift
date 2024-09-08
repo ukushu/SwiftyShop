@@ -35,7 +35,12 @@ public class MyShop {
             print("---------------------" )
             print($0.localizedDescription )
             
-            alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
+            alert(msg: "Failed to restore purchases", text: $0.localizedDescription)
+        }
+        .onSuccess {
+            if $0.count == 0 {
+                alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
+            }
         }
     }
     
