@@ -23,8 +23,8 @@ public class MyShop {
             .onSuccess { _ in }
     }
     
-    public func restorePurchases() {
-        pool.future {
+    public func restorePurchases() -> F<[StoreKit.Transaction]> {
+        return pool.future {
             await SwiftyShopCore.transactions()
         }
         .onSuccess(context: self) { me, list in
