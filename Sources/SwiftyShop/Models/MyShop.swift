@@ -50,13 +50,6 @@ public class MyShop {
         
         return future
     }
-    
-    public var isPro: Bool {
-        SwiftyShopConfig.shared
-            .products
-            .map { ProductID(id: $0).viewModel.isPurchased }
-            .atLeastOneSatisfy{ $0 == true }
-    }
 }
 
 public extension ProductID {
