@@ -5,7 +5,7 @@ import StoreKit
 import Essentials
 
 public extension ProductID {
-    func buy() {
+    func buy() -> F<Product.PurchaseResult> {
         viewModel.model.buy()
     }
 }
@@ -66,7 +66,7 @@ public extension ProductID {
                 }
         }
         
-        func buy() {
+        func buy() -> F<Product.PurchaseResult>  {
             model.buy()
         }
     }
