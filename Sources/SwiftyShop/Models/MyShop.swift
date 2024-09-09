@@ -23,8 +23,8 @@ public class MyShop {
             .onSuccess { _ in }
     }
     
-    public func restorePurchases() -> F<[StoreKit.Transaction]> {
-        return pool.future {
+    public func restorePurchases(alerts: Bool = true) -> F<[StoreKit.Transaction]> {
+        let future = pool.future {
             await SwiftyShopCore.transactions()
         }
         .onSuccess(context: self) { me, list in
@@ -34,14 +34,21 @@ public class MyShop {
             print($0.detailedDescription )
             print("---------------------" )
             print($0.localizedDescription )
-            
-            alert(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
         }
-        .onSuccess {
-            if $0.count == 0 {
-                alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
-            }
+        
+        if alerts {
+            return future
+                .onFailure {
+                    alert(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
+                }
+                .onSuccess {
+                    if $0.count == 0 {
+                        alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
+                    }
+                }
         }
+        
+        return future
     }
     
     public var isPro: Bool {
