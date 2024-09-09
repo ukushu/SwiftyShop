@@ -57,17 +57,6 @@ public class MyShop {
             .map { ProductID(id: $0).viewModel.isPurchased }
             .atLeastOneSatisfy{ $0 == true }
     }
-    
-    public var subscriptionExpired: Bool {
-        let expDates = SwiftyShopConfig.shared
-            .products
-            .compactMap{ ProductID(id: $0).viewModel.expirationDate }
-        
-        guard expDates.count > 0 else { return false }
-        
-        return expDates
-            .allSatisfy{ $0 < Date.now }
-    }
 }
 
 public extension ProductID {
