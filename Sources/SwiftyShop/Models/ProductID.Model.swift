@@ -136,14 +136,15 @@ extension ProductID {
             }
         }
         
-        func buy() {
-            guard purchaseResult.maybeSuccess == nil else { return }
-            guard inProgress.currentValue != true else { return }
+        func buy() -> F<Product.PurchaseResult> {
+            guard purchaseResult.maybeSuccess == nil else { return .failed(WTF("purchaseResult == nil")) }
+            guard inProgress.currentValue != true else { return .failed(WTF("inProgress.currentValue == true")) }
+            
             printDbg("\(productID) going to buy")
             
             inProgress.update(true)
             
-            product.flatMap { try await $0.purchase() }
+            return product.flatMap { try await $0.purchase() }
                     .flatMap { try await $0.finish() }
 //                    .completing(future: purchaseResult, queue: .main)
                     .updatingError(signal: errors)
