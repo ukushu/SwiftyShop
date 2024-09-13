@@ -12,7 +12,7 @@ public extension ProductID {
         
         public let cacheCreationDate: Date
         
-        public init(prod: Product, trans: Transaction) {
+        public init(trans: Transaction) {
             self.productID = trans.productID
             self.price = trans.price?.asStr() ?? ""
             self.expirationDate = trans.expirationDate
