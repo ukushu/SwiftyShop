@@ -1,19 +1,23 @@
 
 import Foundation
+import StoreKit
 
 public extension ProductID {
     struct Info : Codable {
         public let productID: String
         public let price: String
+        public let expirationDate: Date?
+        public let nonConsumable: Bool
         
-        public let expiresAt: Date?
-        public let creationDate: Date
+        public let cacheCreationDate: Date
         
-        public init(productID: String, price: String, expiresAt: Date?, creationDate: Date) {
-            self.productID = productID
-            self.price = price
-            self.expiresAt = expiresAt
-            self.creationDate = creationDate
+        public init(prod: Product, trans: Transaction) {
+            self.productID = trans.productID
+            self.price = trans.price?.asStr() ?? ""
+            self.expirationDate = trans.expirationDate
+            self.nonConsumable = trans.productType == .nonConsumable
+            
+            self.cacheCreationDate = Date.now
         }
     }
 }
