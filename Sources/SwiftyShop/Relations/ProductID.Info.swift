@@ -7,6 +7,7 @@ public extension ProductID {
         public let productID: String
         public let price: String
         public let expirationDate: Date?
+        public let originalPurchaseDate: Date
         public let nonConsumable: Bool
         
         public let cacheCreationDate: Date
@@ -16,6 +17,7 @@ public extension ProductID {
             self.price = trans.price?.asStr() ?? ""
             self.expirationDate = trans.expirationDate
             self.nonConsumable = trans.productType == .nonConsumable
+            self.originalPurchaseDate = trans.originalPurchaseDate
             
             self.cacheCreationDate = Date.now
         }
