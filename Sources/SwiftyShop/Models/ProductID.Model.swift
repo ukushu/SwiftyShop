@@ -39,7 +39,7 @@ extension ProductID.State {
             guard case .success(let success) = purchaseResult else { return .wtf("purchaseResult must be .success(). But it is .userCancelled() OR .pending()") }
             guard case .verified(let transaction) = success   else { return .wtf("purchaseResult must be .verified()") }
             
-            return ProductID.Info(trans: transaction)
+            return ProductID.Info(prod: prod, trans: transaction)
                 .asJson()
                 .flatMap { json in
                     CryptoDictFileID(path: SwiftyShopConfig.shared.dictFilePath, pass: SwiftyShopConfig.shared.dictFilePass)
@@ -47,7 +47,7 @@ extension ProductID.State {
                 }
             
         case .restored(let prod, let transaction):
-            return ProductID.Info(trans: transaction)
+            return ProductID.Info(prod: prod, trans: transaction)
                 .asJson()
                 .flatMap { json in
                     CryptoDictFileID(path: SwiftyShopConfig.shared.dictFilePath, pass: SwiftyShopConfig.shared.dictFilePass)
