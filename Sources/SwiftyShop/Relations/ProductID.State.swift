@@ -1,6 +1,7 @@
 
 import Foundation
 import StoreKit
+import Essentials
 
 public extension ProductID {
     enum State {
@@ -15,9 +16,15 @@ public extension ProductID.State {
     var price : String {
         switch self {
         case .pending(_): ""
-        case .fetched(let product, _): product.displayPrice
-        case .restored(let product, _): product.displayPrice
-        case .read(let info): info.price
+        case .fetched(let product, _):
+            printDbg("fetched \(product.displayPrice)")
+            product.displayPrice
+        case .restored(let product, _):
+            printDbg("restored \(product.displayPrice)")
+            product.displayPrice
+        case .read(let info):
+            printDbg("read \(info.price)")
+            info.price
         }
     }
 }
