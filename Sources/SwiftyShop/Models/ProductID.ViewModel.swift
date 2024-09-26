@@ -15,7 +15,7 @@ public extension ProductID {
         let model : ProductID.Model
         let pool = FSPool(queue: .global(qos: .userInteractive))
         
-        let productID: ProductID
+        public let productID: ProductID
         
         @Published public var state                : ProductID.State
         @Published public var inProgress = false
