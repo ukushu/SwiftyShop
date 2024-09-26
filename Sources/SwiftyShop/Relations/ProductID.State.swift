@@ -20,8 +20,8 @@ public extension ProductID.State {
             case .fetched(let product, _):
                 printDbg("fetched \(product.displayPrice)")
                 return product.displayPrice
-            case .restored(let product, let transaction):
-                printDbg("restored \(transaction.displayPrice)")
+            case .restored(let product, _):
+                printDbg("restored \(product.displayPrice)")
                 return product.displayPrice
             case .read(let info):
                 printDbg("read \(info.price)")
