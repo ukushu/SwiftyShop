@@ -18,13 +18,13 @@ public extension ProductID.State {
         case .pending(_): ""
         case .fetched(let product, _):
             printDbg("fetched \(product.displayPrice)")
-            product.displayPrice
+            return product.displayPrice
         case .restored(let product, _):
             printDbg("restored \(product.displayPrice)")
-            product.displayPrice
+            return product.displayPrice
         case .read(let info):
             printDbg("read \(info.price)")
-            info.price
+            return info.price
         }
     }
 }
