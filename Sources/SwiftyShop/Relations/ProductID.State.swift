@@ -14,18 +14,18 @@ public extension ProductID {
 
 public extension ProductID.State {
     var price : String {
-        return
-            switch self {
-            case .pending(_): ""
-            case .fetched(let product, _):
-                printDbg("fetched \(product.displayPrice)")
-                return product.displayPrice
-            case .restored(let product, _):
-                printDbg("restored \(product.displayPrice)")
-                return product.displayPrice
-            case .read(let info):
-                printDbg("read \(info.price)")
-                return info.price
-            }
+        switch self {
+        case .pending(_):
+            return ""
+        case .fetched(let product, _):
+            printDbg("fetched \(product.displayPrice)")
+            return product.displayPrice
+        case .restored(let product, _):
+            printDbg("restored \(product.displayPrice)")
+            return product.displayPrice
+        case .read(let info):
+            printDbg("read \(info.price)")
+            return info.price
+        }
     }
 }
