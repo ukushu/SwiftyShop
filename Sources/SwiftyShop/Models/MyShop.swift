@@ -39,11 +39,11 @@ public class MyShop {
         if alerts {
             return future
                 .onFailure {
-                    alert(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
+                    alertMacOs(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
                 }
                 .onSuccess {
                     if $0.count == 0 {
-                        alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
+                        alertMacOs(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
                     }
                 }
         }
