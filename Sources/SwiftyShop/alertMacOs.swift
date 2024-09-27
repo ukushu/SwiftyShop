@@ -2,7 +2,7 @@ import Foundation
 import AppKit
 
 public func alertMacOs(msg: String, text: String) {
-    DispatchQueue.main.sync {
+    DispatchQueue.main.async {
         let alert: NSAlert = NSAlert()
         alert.messageText = msg
         alert.informativeText = text
