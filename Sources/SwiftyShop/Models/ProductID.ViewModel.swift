@@ -23,7 +23,7 @@ public extension ProductID {
         
         @Published public var transactionUpdates : [VerificationResult<StoreKit.Transaction>] = []
         
-        public var price  : String { state.price }
+        public var price : String { state.price }
         
         init(productID: ProductID) {
             self.state = .pending(productID)

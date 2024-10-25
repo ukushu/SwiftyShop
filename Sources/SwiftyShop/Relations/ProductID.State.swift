@@ -16,7 +16,7 @@ public extension ProductID.State {
     var price : String {
         switch self {
         case .pending(_):
-            return ""
+            return "..."
         case .fetched(let product, _):
             return product.displayPrice
         case .restored(let product, _):
