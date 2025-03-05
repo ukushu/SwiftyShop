@@ -9,14 +9,14 @@ extension ProductID {
         let productID: ProductID
         let pool = FSPool(queue: DispatchQueue.global(qos: .userInteractive))
         
-        let state               = S<ProductID.State>(queue: .main)
-        let inProgress          = S<Bool>(queue: .main)
-        let errors              = S<Error>(queue: .main)
-        let transactionUpdates  = S<VerificationResult<StoreKit.Transaction>>(queue: .main)
+        let state               = Flow.Signal<ProductID.State>(queue: .main)
+        let inProgress          = Flow.Signal<Bool>(queue: .main)
+        let errors              = Flow.Signal<Error>(queue: .main)
+        let transactionUpdates  = Flow.Signal<VerificationResult<StoreKit.Transaction>>(queue: .main)
         
-        let product             = F<Product>.promise(queue: .main)
-        let purchaseResult      = F<Product.PurchaseResult>.promise(queue: .main)
-        let transaction         = F<StoreKit.Transaction>.promise(queue: .main)
+        let product             = Flow.Future<Product>.promise(queue: .main)
+        let purchaseResult      = Flow.Future<Product.PurchaseResult>.promise(queue: .main)
+        let transaction         = Flow.Future<StoreKit.Transaction>.promise(queue: .main)
         
         init(productID: ProductID) {
             self.productID = productID
@@ -65,7 +65,7 @@ extension ProductID {
                 }
         }
         
-        func buy() -> F<Product.PurchaseResult> {
+        func buy() -> Flow.Future<Product.PurchaseResult> {
             guard purchaseResult.maybeSuccess == nil else { return .failed(WTF("purchaseResult == nil")) }
             guard inProgress.currentValue != true else { return .failed(WTF("inProgress.currentValue == true")) }
             
