@@ -25,7 +25,7 @@ public class MyShop {
     
     public func restorePurchases(alerts: Bool = true) -> F<[StoreKit.Transaction]> {
         let future = pool.future {
-            await SwiftyShopCore.transactions()
+            try await SwiftyShopCore.restorePurchasesAsync()
         }
         .onSuccess(context: self) { me, list in
             me.transactions.update(list)

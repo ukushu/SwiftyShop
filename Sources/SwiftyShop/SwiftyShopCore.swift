@@ -13,6 +13,11 @@ public class SwiftyShopCore {
         }
     }
     
+    public static func restorePurchasesAsync() async throws -> [Transaction] {
+        try await AppStore.sync()
+        return await transactions()
+    }
+    
     public static var proIsUnlocked: Bool {
         if let trans = currentEntitlements().maybeSuccess {
             return trans.notRevoked.count > 0
