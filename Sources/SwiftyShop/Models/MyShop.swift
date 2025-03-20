@@ -9,21 +9,21 @@ public class MyShop {
     
     public let pool = FSPool(queue: DispatchQueue.global())
     
-    public var transactions = S<[StoreKit.Transaction]>(queue: .main)
+    public var transactions = Flow.Signal<[StoreKit.Transaction]>(queue: .main)
     
-    public let products            = F { try await ProductID.available.asProducts() }
-    public let transactionUpdates  = S<VerificationResult<StoreKit.Transaction>>(queue: .main)
+    public let products            = Flow.Future{ try await ProductID.available.asProducts() }
+    public let transactionUpdates  = Flow.Signal<VerificationResult<StoreKit.Transaction>>(queue: .main)
     
     public var viewModels          = LockedVar<[ProductID:ProductID.ViewModel]>([:])
     
-    private var _monitor : F<Void>?
+    private var _monitor : Flow.Future<Void>?
     
     private init() {
-        self._monitor = F { await StoreKit.Transaction.monitor(shop: self) }
+        self._monitor = Flow.Future { await StoreKit.Transaction.monitor(shop: self) }
             .onSuccess { _ in }
     }
     
-    public func restorePurchases(alerts: Bool = true) -> F<[StoreKit.Transaction]> {
+    public func restorePurchases(alerts: Bool = true) -> Flow.Future<[StoreKit.Transaction]> {
         let future = pool.future {
             try await SwiftyShopCore.restorePurchasesAsync()
         }
@@ -39,11 +39,11 @@ public class MyShop {
         if alerts {
             return future
                 .onFailure {
-                    alert(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
+                    alertMacOs(msg: "Failed to restore purchases", text: "Details: \($0.localizedDescription)")
                 }
                 .onSuccess {
                     if $0.count == 0 {
-                        alert(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
+                        alertMacOs(msg: "No purchases found", text: "There are no previous purchases valid for the current period.")
                     }
                 }
         }

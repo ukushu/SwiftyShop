@@ -5,86 +5,24 @@ import StoreKit
 import Essentials
 
 extension ProductID {
-    func restoreFromDisk() -> R<ProductID.Info> {
-        CryptoDictFileID(path: SwiftyShopConfig.shared.dictFilePath, pass: SwiftyShopConfig.shared.dictFilePass)
-            .get(key: self.id)
-            .flatMap {
-                $0.decodeFromJson(type: ProductID.Info.self)
-            }
-    }
-}
-
-extension ProductID.State {
-    var saveNeeded: Bool {
-        switch self {
-        case .fetched(_, let purchaseResult):
-            guard let purchaseResult                          else { return false }
-            guard case .success(let success) = purchaseResult else { return false }
-            guard case .verified(_) = success                 else { return false }
-            
-            return true
-            
-        case .restored(_,_):
-            return true
-            
-        default:
-            return false
-        }
-    }
-    
-    func saveToDisk() -> R<()> {
-        switch self {
-        case .fetched(let prod, let purchaseResult):
-            guard let purchaseResult                          else { return .wtf("purchaseResult is nil") }
-            guard case .success(let success) = purchaseResult else { return .wtf("purchaseResult must be .success(). But it is .userCancelled() OR .pending()") }
-            guard case .verified(let transaction) = success   else { return .wtf("purchaseResult must be .verified()") }
-            
-            return ProductID.Info(prod: prod, trans: transaction)
-                .asJson()
-                .flatMap { json in
-                    CryptoDictFileID(path: SwiftyShopConfig.shared.dictFilePath, pass: SwiftyShopConfig.shared.dictFilePass)
-                        .set(key: prod.id, value: json)
-                }
-            
-        case .restored(let prod, let transaction):
-            return ProductID.Info(prod: prod, trans: transaction)
-                .asJson()
-                .flatMap { json in
-                    CryptoDictFileID(path: SwiftyShopConfig.shared.dictFilePath, pass: SwiftyShopConfig.shared.dictFilePass)
-                        .set(key: prod.id, value: json)
-                }
-            
-        default:
-            return .wtf("ProductID.State must be .fetched(_,_) or .restored(_,_)")
-        }
-    }
-}
-
-extension ProductID {
     class Model {
         let productID: ProductID
         let pool = FSPool(queue: DispatchQueue.global(qos: .userInteractive))
         
-        let state               = S<ProductID.State>(queue: .main)
-        let inProgress          = S<Bool>(queue: .main)
-        let errors              = S<Error>(queue: .main)
-        let transactionUpdates  = S<VerificationResult<StoreKit.Transaction>>(queue: .main)
+        let state               = Flow.Signal<ProductID.State>(queue: .main)
+        let inProgress          = Flow.Signal<Bool>(queue: .main)
+        let errors              = Flow.Signal<Error>(queue: .main)
+        let transactionUpdates  = Flow.Signal<VerificationResult<StoreKit.Transaction>>(queue: .main)
         
-        let product             = F<Product>.promise(queue: .main)
-        let purchaseResult      = F<Product.PurchaseResult>.promise(queue: .main)
-        let transaction         = F<StoreKit.Transaction>.promise(queue: .main)
+        let product             = Flow.Future<Product>.promise(queue: .main)
+        let purchaseResult      = Flow.Future<Product.PurchaseResult>.promise(queue: .main)
+        let transaction         = Flow.Future<StoreKit.Transaction>.promise(queue: .main)
         
         init(productID: ProductID) {
             self.productID = productID
             
-            let info : ProductID.Info? = productID.restoreFromDisk().maybeSuccess /* read info from disk */
-            
-            if let info = info  {
-                self.state.update(.read(info))
-            } else {
-                self.state.update(.pending(productID))
-                listen()
-            }
+            self.state.update(.pending(productID))
+            listen()
         }
         
         func listen() {
@@ -125,18 +63,9 @@ extension ProductID {
                         me.transaction.complete(.success(ours))
                     }
                 }
-            
-            state.onUpdate {
-                if $0.saveNeeded {
-                    $0.saveToDisk()
-                        .onFailure {
-                            printDbg("failed save to disk. Reason: \($0.localizedDescription )")
-                        }
-                }
-            }
         }
         
-        func buy() -> F<Product.PurchaseResult> {
+        func buy() -> Flow.Future<Product.PurchaseResult> {
             guard purchaseResult.maybeSuccess == nil else { return .failed(WTF("purchaseResult == nil")) }
             guard inProgress.currentValue != true else { return .failed(WTF("inProgress.currentValue == true")) }
             
