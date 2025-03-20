@@ -7,7 +7,7 @@ import Essentials
 public class MyShop {
     public static var shared = MyShop()
     
-    public let pool = FSPool(queue: DispatchQueue.global())
+    public let pool = Flow.Pool(queue: DispatchQueue.global())
     
     public var transactions = Flow.Signal<[StoreKit.Transaction]>(queue: .main)
     

@@ -7,7 +7,7 @@ import Essentials
 extension ProductID {
     class Model {
         let productID: ProductID
-        let pool = FSPool(queue: DispatchQueue.global(qos: .userInteractive))
+        let pool =  Flow.Pool(queue: DispatchQueue.global(qos: .userInteractive))
         
         let state               = Flow.Signal<ProductID.State>(queue: .main)
         let inProgress          = Flow.Signal<Bool>(queue: .main)
