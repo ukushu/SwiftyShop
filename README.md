@@ -231,3 +231,17 @@ fileprivate struct PriceContent: View {
     }
 }
 ```
+
+### Check for trial is accessible before buy:
+```
+{Product.SubscriptionInfo}.isTrialAccessible
+```
+or
+```
+{Product.SubscriptionInfo}.isTrialAccessibleAsync
+```
+
+### Check is trial passed:
+```
+{ProductID.ViewModel}.isTrialPassed(trialDays: Int)
+```

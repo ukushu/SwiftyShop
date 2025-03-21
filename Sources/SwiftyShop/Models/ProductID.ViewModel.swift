@@ -23,6 +23,11 @@ public extension ProductID {
         
         @Published public var transactionUpdates : [VerificationResult<StoreKit.Transaction>] = []
         
+        func isTrialPassed(trialDays: Int) -> Flow.Future<Bool> {
+            model.transaction
+                .map{ $0.isTrialPassed(trialDays: trialDays) }
+        }
+        
         public var price : String { state.price }
         
         init(productID: ProductID) {
@@ -35,7 +40,7 @@ public extension ProductID {
             
             model.inProgress
                 .assign(on: self, to: \.inProgress)
-            
+                
             model.transactionUpdates
                 .append(on: self, to: \.transactionUpdates)
             
