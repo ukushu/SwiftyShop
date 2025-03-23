@@ -23,6 +23,29 @@ public class MyShop {
             .onSuccess { _ in }
     }
     
+    public func restoreTransactions(alerts: Bool = true) -> Flow.Future<[StoreKit.Transaction]> {
+        let future = pool.future {
+            await SwiftyShopCore.transactions()
+        }
+        .onSuccess(context: self) { me, list in
+            me.transactions.update(list)
+        }
+        .onFailure {
+            print($0.detailedDescription )
+            print("---------------------" )
+            print($0.localizedDescription )
+        }
+        
+        if alerts {
+            return future
+                .onFailure {
+                    alertMacOs(msg: "Failed to restore transactions", text: "Details: \($0.localizedDescription)")
+                }
+        }
+        
+        return future
+    }
+    
     public func restorePurchases(alerts: Bool = true) -> Flow.Future<[StoreKit.Transaction]> {
         let future = pool.future {
             try await SwiftyShopCore.restorePurchasesAsync()
